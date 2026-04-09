@@ -2,13 +2,14 @@ import User from "../model/user.schema.js";
 // create
 export const createUser = async (req, res) => {
   try {
+    const { name, email, password, role } = req.body;
     const newUser = new User(req.body);
     if (!name) {
       return res.status(400).json({
         message: "Name is required",
       });
     }
-    const existingUser = await UserManagement.findOne({
+    const existingUser = await User.findOne({
       email,
     });
 
