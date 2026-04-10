@@ -1,4 +1,5 @@
 import Project from "../model/project.schema.js";
+import mongoose from "mongoose";
 
 // create project
 export const createProject = async (req, res) => {

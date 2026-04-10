@@ -77,13 +77,36 @@ const router = express.Router();
  *         description: Some server error
  */
 router.post("/create", createTask);
-
 /**
  * @swagger
  * /api/task/get:
  *   get:
  *     summary: Returns the list of all tasks
  *     tags: [Tasks]
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, in-progress, completed]
+ *         required: false
+ *         description: Filter tasks by status
+ *
+ *       - in: query
+ *         name: priority
+ *         schema:
+ *           type: string
+ *           enum: [low, medium, high]
+ *         required: false
+ *         description: Filter tasks by priority
+ *
+ *       - in: query
+ *         name: assignedTo
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter tasks by assigned user ID
+ *
  *     responses:
  *       200:
  *         description: The list of tasks
@@ -95,7 +118,6 @@ router.post("/create", createTask);
  *                 $ref: '#/components/schemas/Task'
  */
 router.get("/get", getAllTask);
-
 /**
  * @swagger
  * /api/task/get/{id}:

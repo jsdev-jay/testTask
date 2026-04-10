@@ -1,4 +1,5 @@
 import Task from "../model/task.schema.js";
+import mongoose from "mongoose";
 
 // create task
 export const createTask = async (req, res) => {
@@ -49,15 +50,6 @@ export const createTask = async (req, res) => {
 export const getAllTask = async (req, res) => {
   try {
     const { status, priority, assignedTo } = req.query;
-    if (!status) {
-      return res.status(400).json({ message: "Status is required" });
-    }
-    if (!priority) {
-      return res.status(400).json({ message: "Priority is required" });
-    }
-    if (!assignedTo) {
-      return res.status(400).json({ message: "Assigned To is required" });
-    }
 
     let filter = {};
 
