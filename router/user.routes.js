@@ -4,6 +4,7 @@ import {
   getAllUser,
   getUserById,
   updateUser,
+  deleteUser,
 } from "../controller/user.controller.js";
 
 const router = express.Router();
@@ -24,7 +25,7 @@ const router = express.Router();
  *           description: The auto-generated id of the user
  *         username:
  *           type: string
- *           description: The user's username
+ *           description: The user's name
  *         email:
  *           type: string
  *           description: The user's email
@@ -33,7 +34,7 @@ const router = express.Router();
  *           enum: [admin, user]
  *           description: The user's role
  *       example:
- *         username: johndoe
+ *         name: johndoe
  *         email: johndoe@example.com
  *         password: secretpassword
  *         role: user
@@ -48,7 +49,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/user/create:
+ * /api/user:
  *   post:
  *     summary: Create a new user
  *     tags: [Users]
@@ -64,11 +65,11 @@ const router = express.Router();
  *       500:
  *         description: Some server error
  */
-router.post("/create", createUser);
+router.post("/", createUser);
 
 /**
  * @swagger
- * /api/user/get:
+ * /api/user:
  *   get:
  *     summary: Returns the list of all the users
  *     tags: [Users]
@@ -82,11 +83,11 @@ router.post("/create", createUser);
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/get", getAllUser);
+router.get("/", getAllUser);
 
 /**
  * @swagger
- * /api/user/get/{id}:
+ * /api/user/{id}:
  *   get:
  *     summary: Get the user by id
  *     tags: [Users]
@@ -107,11 +108,11 @@ router.get("/get", getAllUser);
  *       404:
  *         description: The user was not found
  */
-router.get("/get/:id", getUserById);
+router.get("/:id", getUserById);
 
 /**
  * @swagger
- * /api/user/update/{id}:
+ * /api/user/{id}:
  *   put:
  *     summary: Update the user by id
  *     tags: [Users]
@@ -136,6 +137,29 @@ router.get("/get/:id", getUserById);
  *       500:
  *         description: Some error happened
  */
-router.put("/update/:id", updateUser);
+router.put("/:id", updateUser);
+
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   delete:
+ *     summary: Delete the user by id
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user id
+ *     responses:
+ *       200:
+ *         description: The user was deleted
+ *       404:
+ *         description: The user was not found
+ *       500:
+ *         description: Some error happened
+ */
+router.delete("/:id", deleteUser);
 
 export default router;

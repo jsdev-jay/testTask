@@ -2,12 +2,14 @@ import User from "../model/user.schema.js";
 // create
 export const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const newUser = new User(req.body);
-    if (!name) {
+    const { username, email, password, role } = req.body;
+    if (!username) {
       return res.status(400).json({
         message: "Name is required",
       });
+    }
+    if (!email) {
+      res.status(400).json({ message: "Email is required" });
     }
     const existingUser = await User.findOne({
       email,
@@ -19,12 +21,15 @@ export const createUser = async (req, res) => {
       });
     }
     if (!password) {
-      return res.status(400).json({
-        message: "Password is required",
-      });
+      return res.status(400).json({ message: "Password is required" });
     }
+    if (!role) {
+      return res.status(400).json({ message: "Role is  required" });
+    }
+
+    const newUser = new User(req.body);
     await newUser.save();
-    res.status(201).json({ message: "User saved", user: newUser });
+    res.status(201).json({ username, email, role });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ message: error.message });
@@ -34,10 +39,7 @@ export const createUser = async (req, res) => {
 // get all user
 export const getAllUser = async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const user = await User.find();
+    const user = await User.find().select("-password");
     res.status(200).json({ message: "User fetched", user });
   } catch (error) {
     console.log(error.message);
@@ -48,9 +50,6 @@ export const getAllUser = async (req, res) => {
 // get user by id
 export const getUserById = async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
     const user = await User.findById(req.params.id);
     res.status(200).json({ message: "User fetched", user });
   } catch (error) {
@@ -62,14 +61,20 @@ export const getUserById = async (req, res) => {
 // update user
 export const updateUser = async (req, res) => {
   try {
+    const { name, email } = req.body;
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
     if (!user) {
-      return res.status(401).json({ message: "USER NOT FOUND" });
+      return res.status(404).json({ message: "USER NOT FOUND" });
     }
+    if (!name) {
+      return res.status(400).json({ message: "Name is required " });
+    }
+
     if (email) {
-      const existing = await UserManagement.findOne({
+      const existing = await User.findOne({
         email,
         _id: { $ne: req.params.id },
       });
@@ -79,12 +84,11 @@ export const updateUser = async (req, res) => {
           message: "User with same email has created",
         });
       }
-      updateData.email = email;
     }
-    res.status(200).json({ message: "User updated", user });
+    res.status(200).json({ name, email });
   } catch (error) {
     console.log(error.message);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
