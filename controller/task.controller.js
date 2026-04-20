@@ -7,10 +7,10 @@ export const createTask = async (req, res) => {
     const { projectId, title, description, status, assignedTo, priority } =
       req.body;
     if (!projectId) {
-      if (!mongoose.Types.ObjectId.isValid(projectId)) {
-        return res.status(400).json({ message: "Invalid Project ID" });
-      }
       return res.status(400).json({ message: "Project ID is required" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      return res.status(400).json({ message: "Invalid Project ID" });
     }
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
@@ -22,10 +22,10 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ message: "Status is required" });
     }
     if (!assignedTo) {
-      if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
-        return res.status(400).json({ message: "Invalid Assigned To" });
-      }
       return res.status(400).json({ message: "Assigned To is required" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(assignedTo)) {
+      return res.status(400).json({ message: "Invalid Assigned To" });
     }
     if (!priority) {
       return res.status(400).json({ message: "Priority is required" });
@@ -42,7 +42,7 @@ export const createTask = async (req, res) => {
     res.status(201).json({ message: "Task created", task: newTask });
   } catch (error) {
     console.log(error.message);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -88,7 +88,33 @@ export const getTaskById = async (req, res) => {
 // update task
 export const updateTask = async (req, res) => {
   try {
-    const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+    const { title, description, status, assignedTo, priority } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid ID",
+      });
+    }
+    if (title) {
+      task.title = title;
+    }
+    if (description) {
+      task.description = description;
+    }
+    if (status) {
+      task.status = status;
+    }
+    if (assignedTo) {
+      task.assignedTo = assignedTo;
+    }
+    if (priority) {
+      task.priority = priority;
+    }
+    const task = await Task.findByIdAndUpdate(req.params.id, {
+      title,
+      description,
+      status,
+      assignedTo,
+      priority,
       new: true,
     });
     if (!task) {
@@ -111,6 +137,6 @@ export const deleteTask = async (req, res) => {
     res.status(200).json({ message: "Task deleted", task });
   } catch (error) {
     console.log(error.message);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

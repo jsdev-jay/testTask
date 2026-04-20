@@ -86,7 +86,7 @@ router.post("/tasks/:taskId/users/:userId/comments", createComment);
 
 /**
  * @swagger
- * /api/comments/get:
+ * /api/comments:
  *   get:
  *     summary: Returns the list of all comments
  *     tags: [Comments]
@@ -100,11 +100,11 @@ router.post("/tasks/:taskId/users/:userId/comments", createComment);
  *               items:
  *                 $ref: '#/components/schemas/Comment'
  */
-router.get("/get", getAllComments);
+router.get("/", getAllComments);
 
 /**
  * @swagger
- * /api/comments/update/{id}:
+ * /api/comments/{id}:
  *   put:
  *     summary: Update comment by id
  *     tags: [Comments]
@@ -134,11 +134,11 @@ router.get("/get", getAllComments);
  *       500:
  *         description: Some error happened
  */
-router.put("/update/:id", updateComment);
+router.put("/:id", updateComment);
 
 /**
  * @swagger
- * /api/comments/delete/{id}:
+ * /api/comments/{id}:
  *   delete:
  *     summary: Delete comment by id
  *     tags: [Comments]
@@ -155,6 +155,6 @@ router.put("/update/:id", updateComment);
  *       404:
  *         description: Comment not found
  */
-router.delete("/delete/:id", deleteComment);
+router.delete("/:id", deleteComment);
 
 export default router;

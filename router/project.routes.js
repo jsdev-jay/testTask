@@ -62,7 +62,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/project/create:
+ * /api/project:
  *   post:
  *     summary: Create a new project
  *     tags: [Projects]
@@ -78,11 +78,11 @@ const router = express.Router();
  *       500:
  *         description: Some server error
  */
-router.post("/create", createProject);
+router.post("/", createProject);
 
 /**
  * @swagger
- * /api/project/get:
+ * /api/project:
  *   get:
  *     summary: Returns the list of all projects
  *     tags: [Projects]
@@ -96,11 +96,11 @@ router.post("/create", createProject);
  *               items:
  *                 $ref: '#/components/schemas/Project'
  */
-router.get("/get", getAllProject);
+router.get("/", getAllProject);
 
 /**
  * @swagger
- * /api/project/get/{id}:
+ * /api/project/{id}:
  *   get:
  *     summary: Get project by id
  *     tags: [Projects]
@@ -121,11 +121,11 @@ router.get("/get", getAllProject);
  *       404:
  *         description: Project not found
  */
-router.get("/get/:id", getProjectById);
+router.get("/:id", getProjectById);
 
 /**
  * @swagger
- * /api/project/update/{id}:
+ * /api/project/{id}:
  *   put:
  *     summary: Update project by id
  *     tags: [Projects]
@@ -150,11 +150,11 @@ router.get("/get/:id", getProjectById);
  *       500:
  *         description: Some error happened
  */
-router.put("/update/:id", updateProject);
+router.put("/:id", updateProject);
 
 /**
  * @swagger
- * /api/project/delete/{id}:
+ * /api/project/{id}:
  *   delete:
  *     summary: Delete project by id
  *     tags: [Projects]
@@ -171,5 +171,5 @@ router.put("/update/:id", updateProject);
  *       404:
  *         description: Project not found
  */
-router.delete("/delete/:id", deleteProject);
+router.delete("/:id", deleteProject);
 export default router;

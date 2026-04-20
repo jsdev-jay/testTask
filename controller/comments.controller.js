@@ -16,27 +16,28 @@ export const createComment = async (req, res) => {
       });
     }
 
-    if (
-      !mongoose.Types.ObjectId.isValid(taskId) ||
-      !mongoose.Types.ObjectId.isValid(userId)
-    ) {
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
       return res.status(400).json({
-        message: "Invalid taskId or userId",
+        message: "Invalid taskId",
+      });
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        message: "Invalid userId",
       });
     }
 
-    const task = await Task.findById(taskId);
+    const [task, user] = await Promise.all([
+      Task.findById(taskId),
+      User.findById(userId),
+    ]);
+
     if (!task) {
-      return res.status(404).json({
-        message: "Task not found",
-      });
+      return res.status(404).json({ message: "Task not found" });
     }
 
-    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
     const existingComment = await Comment.findOne({
       userId,
@@ -78,16 +79,30 @@ export const getAllComments = async (req, res) => {
 // update comment
 export const updateComment = async (req, res) => {
   try {
-    const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, {
+    const { comment } = req.body;
+    if (!comment) {
+      return res.status(400).json({
+        message: "Comment is required",
+      });
+    }
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid ID",
+      });
+    }
+    const updatedComment = await Comment.findByIdAndUpdate(req.params.id, {
+      comment,
       new: true,
     });
-    if (!comment) {
+    if (!updatedComment) {
       return res.status(404).json({ message: "Comment not found" });
     }
-    res.status(200).json({ message: "Comment updated", comment });
+    res
+      .status(200)
+      .json({ message: "Comment updated", comment: updatedComment });
   } catch (error) {
     console.log(error.message);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -101,6 +116,6 @@ export const deleteComment = async (req, res) => {
     res.status(200).json({ message: "Comment deleted", comment });
   } catch (error) {
     console.log(error.message);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

@@ -60,7 +60,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/task/create:
+ * /api/task:
  *   post:
  *     summary: Create a new task
  *     tags: [Tasks]
@@ -76,10 +76,10 @@ const router = express.Router();
  *       500:
  *         description: Some server error
  */
-router.post("/create", createTask);
+router.post("/", createTask);
 /**
  * @swagger
- * /api/task/get:
+ * /api/task:
  *   get:
  *     summary: Returns the list of all tasks
  *     tags: [Tasks]
@@ -117,10 +117,10 @@ router.post("/create", createTask);
  *               items:
  *                 $ref: '#/components/schemas/Task'
  */
-router.get("/get", getAllTask);
+router.get("/", getAllTask);
 /**
  * @swagger
- * /api/task/get/{id}:
+ * /api/task/{id}:
  *   get:
  *     summary: Get task by id
  *     tags: [Tasks]
@@ -141,11 +141,11 @@ router.get("/get", getAllTask);
  *       404:
  *         description: Task not found
  */
-router.get("/get/:id", getTaskById);
+router.get("/:id", getTaskById);
 
 /**
  * @swagger
- * /api/task/update/{id}:
+ * /api/task/{id}:
  *   put:
  *     summary: Update task by id
  *     tags: [Tasks]
@@ -170,11 +170,11 @@ router.get("/get/:id", getTaskById);
  *       500:
  *         description: Some error happened
  */
-router.put("/update/:id", updateTask);
+router.put("/:id", updateTask);
 
 /**
  * @swagger
- * /api/task/delete/{id}:
+ * /api/task/{id}:
  *   delete:
  *     summary: Delete task by id
  *     tags: [Tasks]
@@ -191,5 +191,5 @@ router.put("/update/:id", updateTask);
  *       404:
  *         description: Task not found
  */
-router.delete("/delete/:id", deleteTask);
+router.delete("/:id", deleteTask);
 export default router;

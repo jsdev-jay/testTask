@@ -8,6 +8,12 @@ export const createUser = async (req, res) => {
         message: "Name is required",
       });
     }
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+    if (!role) {
+      return res.status(400).json({ message: "Role is  required" });
+    }
     if (!email) {
       res.status(400).json({ message: "Email is required" });
     }
@@ -20,14 +26,8 @@ export const createUser = async (req, res) => {
         message: "User with same email has created",
       });
     }
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-    if (!role) {
-      return res.status(400).json({ message: "Role is  required" });
-    }
 
-    const newUser = new User(req.body);
+    const newUser = new User({ username, email, password, role });
     await newUser.save();
     res.status(201).json({ username, email, role });
   } catch (error) {
@@ -43,7 +43,7 @@ export const getAllUser = async (req, res) => {
     res.status(200).json({ message: "User fetched", user });
   } catch (error) {
     console.log(error.message);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -51,6 +51,9 @@ export const getAllUser = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.status(200).json({ message: "User fetched", user });
   } catch (error) {
     console.log(error.message);
@@ -62,13 +65,6 @@ export const getUserById = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { name, email } = req.body;
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "USER NOT FOUND" });
-    }
     if (!name) {
       return res.status(400).json({ message: "Name is required " });
     }
@@ -85,6 +81,14 @@ export const updateUser = async (req, res) => {
         });
       }
     }
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "USER NOT FOUND" });
+    }
+
     res.status(200).json({ name, email });
   } catch (error) {
     console.log(error.message);
