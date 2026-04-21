@@ -1,4 +1,5 @@
 import User from "../model/user.schema.js";
+import mongoose from "mongoose";
 // create
 export const createUser = async (req, res) => {
   try {
@@ -65,6 +66,11 @@ export const getUserById = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { name, email } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid ID",
+      });
+    }
     if (!name) {
       return res.status(400).json({ message: "Name is required " });
     }
@@ -81,7 +87,7 @@ export const updateUser = async (req, res) => {
         });
       }
     }
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    const user = await User.findByIdAndUpdate(req.params.id, {
       new: true,
     });
 
